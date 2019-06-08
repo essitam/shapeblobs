@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  </head>
+  <body>
+    <div id="canvas"></div>
+    <div ></div>
+    <script>
+
+    // Get input from user
+    var points = [];
+    var r;
+    var g;
+    var b;
+
+    // Keep list of DOM elements for clearing later when reloading
+    var listItems = [];
+
+    function setup() {
+
+      var canvas = createCanvas(400, 400);
+      canvas.parent('canvas');
+
+      canvas.mousePressed(startDrawing);
+      canvas.mouseReleased(endDrawing);
+
+      r = random(255);
+      g = random(255);
+      b = random(255);
+
+    }
+
+    function startDrawing() {
+      // Empty array
+      points = [];
+    }
+
+    // Put points in the array
+    function mouseDragged() {
+      var p = {
+        x: mouseX,
+        y: mouseY
+      }
+      points.push(p);
+    }
+
+    // Finished send data!
+    function endDrawing() {
+      analyzeThis();
+    }
+
+
+    function draw() {
+      background(g, r, b);
+
+      noStroke();
+      fill(r,g,b);
+
+
+      beginShape();
+      for (var i = 0; i < points.length; i++) {
+        vertex(points[i].x, points[i].y);
+      }
+      endShape();
+    }
+
+    function analyzeThis(){
+      // var txt = select('#textinput').value();
+      var data = {
+        path: points
+      };
+
+      httpPost('/analyze', 'json', data, dataPosted, postErr);
+
+    }
+
+    function dataPosted(result){
+      console.log(result);
+    }
+
+    function postErr(err){
+      console.log(err);
+    }
+
+    </script>
+
+  </body>
+</html>
