@@ -75,6 +75,8 @@
         path: points
       };
 
+      save(data, 'my.json', true);
+
       httpPost('/analyze', 'json', data, dataPosted, postErr);
 
     }
